@@ -1,0 +1,110 @@
+
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+// Function to initialize the Tic Tac Toe board
+void initializeBoard(vector<vector<char>>& board) {
+    for (int i = 0; i < 3; ++i) {
+        vector<char> row(3, ' ');  // Initialize each row with empty spaces
+        board.push_back(row);
+    }
+}
+
+// Function to display the Tic Tac Toe board
+void displayBoard(const vector<vector<char>>& board) {
+    cout << "\n-------------\n";
+    for (int i = 0; i < 3; ++i) {
+        cout << "| ";
+        for (int j = 0; j < 3; ++j) {
+            cout << board[i][j] << " | ";
+        }
+        cout << "\n-------------\n";
+    }
+}
+
+// Function to check if a player has won
+bool checkWin(const vector<vector<char>>& board, char player) {
+    // Check rows and columns
+    for (int i = 0; i < 3; ++i) {
+        if (board[i][0] == player && board[i][1] == player && board[i][2] == player)
+            return true;
+        if (board[0][i] == player && board[1][i] == player && board[2][i] == player)
+            return true;
+    }
+
+    // Check diagonals
+    if (board[0][0] == player && board[1][1] == player && board[2][2] == player)
+        return true;
+    if (board[0][2] == player && board[1][1] == player && board[2][0] == player)
+        return true;
+
+    return false;
+}
+
+// Function to check if the board is full (draw)
+bool checkDraw(const vector<vector<char>>& board) {
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            if (board[i][j] == ' ')
+                return false;
+        }
+    }
+    return true;
+}
+
+// Function to play the game
+void playGame() {
+    vector<vector<char>> board;
+    initializeBoard(board);
+    char currentPlayer = 'X';
+    bool gameover = false;
+
+    cout << "Welcome to Tic Tac Toe!\n";
+    cout << "Player 1 (X) - Player 2 (O)\n";
+    displayBoard(board);
+
+    while (!gameover) {
+        int row, col;
+        cout << "Player " << currentPlayer << ", enter your move (row and column): ";
+        cin >> row >> col;
+
+        // Validate input
+        while (row < 1 || row > 3 || col < 1 || col > 3 || board[row - 1][col - 1] != ' ') {
+            cout << "Invalid move. Try again: ";
+            cin >> row >> col;
+        }
+
+        // Make the move
+        board[row - 1][col - 1] = currentPlayer;
+        displayBoard(board);
+
+        // Check for win
+        if (checkWin(board, currentPlayer)) {
+            cout << "Player " << currentPlayer << " wins!\n";
+            gameover = true;
+        } else if (checkDraw(board)) {
+            cout << "It's a draw!\n";
+            gameover = true;
+        }
+
+        // Switch player
+        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+    }
+}
+
+int main() {
+    char playAgain;
+
+    do {
+        playGame();
+        cout << "Do you want to play again? (y/n): ";
+        cin >> playAgain;
+    } while (playAgain == 'y' || playAgain == 'Y');
+
+    cout << "Thanks for playing Tic Tac Toe!\n";
+
+    return 0;
+}
